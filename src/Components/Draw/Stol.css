@@ -37,8 +37,13 @@
     position: relative;
     width: 90vw;
     height: calc(90vw * 0.75);
-    background-color: #2d3436;
     padding: 20px;
+}
+
+.Background {
+    background-image: url("https://free-3dtextureshd.com/wp-content/uploads/2019/05/WOOD-FLOORS-Parquet-Textures-ARCHITECTURE-parquet-flooring-texture-seamless-BPR-material-High-Resolution-Free-Download-substances-4k-full-864x864.jpg");
+    background-repeat: no-repeat;
+    background-size: cover;
 }
 
 

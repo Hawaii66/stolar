@@ -217,7 +217,7 @@ function Drawer() {
     }
 
     return (
-        <div >
+        <div className="Background">
             <div >
                 <select name="mode" id="mode" onChange={(e)=>setMode(StringToMode(e.currentTarget.value))}>
                     <option value="View">Titta</option>
