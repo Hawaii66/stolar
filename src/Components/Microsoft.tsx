@@ -1,5 +1,5 @@
 import React from 'react'
-import MicrosoftLogin from 'react-microsoft-login'
+import MicrosoftLogin from 'react-microsoft-login';
 import { emptyUser, Roles, User } from '../Interfaces/User';
 
 interface Props{
