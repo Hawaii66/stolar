@@ -1,14 +1,15 @@
 import React from 'react'
 import MicrosoftLogin from 'react-microsoft-login';
 import { emptyUser, Roles, User } from '../Interfaces/User';
+import CustomModal from './Utils/CustomModal';
+import 'bootstrap/dist/css/bootstrap.min.css';
 
 interface Props{
     setUser:React.Dispatch<React.SetStateAction<User>>,
 }
 
 function Microsoft({setUser}:Props) {
-
-    if(process.env.REACT_APP_WEBBISTE === "http://localhost:3000"){
+    /*if(process.env.REACT_APP_WEBBISTE === "http://localhost:3000"){
         setUser({
             active:true,
             class:"",
@@ -21,7 +22,7 @@ function Microsoft({setUser}:Props) {
             role:Roles.student,
             number:"0705453110"
         });
-    }
+    }*/
 
     const authHandler = (err:any, data:any)=>{
         if(err == null){
@@ -49,7 +50,9 @@ function Microsoft({setUser}:Props) {
 
     return (
         <div>
-            <MicrosoftLogin clientId={key} withUserData={true} authCallback={authHandler}/>
+            <CustomModal title="Logga in" show={true} buttonClicked={()=>{}} buttons={[]}>
+                <MicrosoftLogin clientId={key} withUserData={true} authCallback={authHandler}/>
+            </CustomModal>
         </div>
     )
 }

@@ -1,9 +1,9 @@
 import React, { useState } from 'react';
-import logo from './logo.svg';
-import './App.css';
 import { BrowserRouter as Router } from 'react-router-dom';
 import StolarRoutes from './Routes/StolarRoutes';
 import { emptyUser } from './Interfaces/User';
+
+require('dotenv').config()
 
 function App() {
   const [user,setUser] = useState(emptyUser);

@@ -1,0 +1,29 @@
+.Stol {
+    position: absolute;
+    background-color: #e67e22;
+    color: #2d3436;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    border: solid #2d3436 2px;
+    transform: translate(-2px, -2px);
+}
+
+.Stol h2 {
+    font-size: small;
+    font-weight: 1000;
+    font-variant: small-caps;
+    color: #2d3436;
+}
+
+.Force {
+    border: solid #2d3436 3px;
+    border-radius: 10%;
+    transform: translate(-3px, -3px);
+}
+
+.StolParent {
+    position: relative;
+    width: 1000px;
+    height: 1000px;
+}

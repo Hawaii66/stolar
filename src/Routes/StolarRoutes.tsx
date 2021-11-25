@@ -11,6 +11,7 @@ interface Props{
 }
 
 function StolarRoutes({user,setUser}:Props) {
+
     return (
         <div>
             <Routes>
@@ -18,6 +19,7 @@ function StolarRoutes({user,setUser}:Props) {
                 <Route path="/draw" element={<Drawer/>}/>
                 <Route path="/" element={<Home/>}/>
             </Routes>
+            {user.active === false && <Microsoft setUser={setUser}/>}
         </div>
     )
 }
