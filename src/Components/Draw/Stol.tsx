@@ -1,5 +1,6 @@
 import React, { useEffect } from 'react'
-import { ClassRoom, Pos } from '../../Interfaces/Classroom'
+import { Pos } from '../../Interfaces/Classroom'
+import { EditModes } from './Drawer'
 
 interface Props{
     name:string,
@@ -8,39 +9,41 @@ interface Props{
     force:boolean,
     index:number,
     current:number,
-    setCurrent:React.Dispatch<React.SetStateAction<number>>,
+    setCurrent:(i:number)=>void,
     changeChairPos:(index:number,pos:Pos)=>void,
+    changeChairForce:(index:number,force:boolean)=>void
     mousePos:Pos,
-    classRoom:ClassRoom,
     grid:Pos,
     offset:Pos,
-    scale:number
+    scale:number,
+    editMode:EditModes
 }
 
 const snapToGrid = (n:number,grid:number):number => {
     return grid * Math.round(n/grid)
 }
 
-function Stol({name,pos,size,force,index,current,scale,setCurrent,changeChairPos,mousePos,classRoom,grid,offset}:Props) {
+function Stol({name,pos,size,force,index,current,scale,setCurrent,changeChairPos,changeChairForce,mousePos,grid,offset,editMode}:Props) {
     useEffect(() => {
         if(current === index){
-            var x = snapToGrid((mousePos.x - size.x / 2 - offset.x)/scale,grid.x);
-            var y = snapToGrid((mousePos.y - size.y / 2 - offset.y)/scale,grid.y);
+            if(editMode === EditModes.Move){
+                var x = snapToGrid((mousePos.x - size.x / 2 - offset.x)/scale,grid.x);
+                var y = snapToGrid((mousePos.y - size.y / 2 - offset.y)/scale,grid.y);
 
-            //x /= scale;
-            //y /= scale;
-
-            if(x !== pos.x || y !== pos.y){
-                changeChairPos(index, {x:x,y:y});
+                if(x !== pos.x || y !== pos.y){
+                    changeChairPos(index, {x:x,y:y});
+                }
             }
         }
-    }, [mousePos, changeChairPos, current, grid, index, offset, size])
+    }, [mousePos, changeChairPos, current, grid, index, offset, size, pos, scale, editMode])
 
     const stolClicked = () => {
-        if(current === index){
-            setCurrent(-1);
-        }else{
-            setCurrent(index);
+        if(editMode === EditModes.Move || editMode === EditModes.Properties){
+            if(current === index){
+                setCurrent(-1);
+            }else{
+                setCurrent(index);
+            }
         }
     }
 
