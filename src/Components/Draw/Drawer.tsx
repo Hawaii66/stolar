@@ -22,6 +22,7 @@ function Drawer() {
     const [grid,setGrid] = useState<Pos>({x:1,y:1});
     const [offset,setOffset] = useState<Pos>({x:0,y:0});
     const [mode,setMode] = useState<Modes>(Modes.View);
+    const [scale,setScale] = useState(1);
     const [classRoom,setClassRoom] = useState<ClassRoom>({
         classRoomID:"5327389257325",
         name:"Sal 1",
@@ -87,6 +88,7 @@ function Drawer() {
 
     const stolParentRef = useRef<HTMLDivElement>(null);
     const divRef = useRef<HTMLDivElement>(null);
+    const wraperRef = useRef<HTMLDivElement>(null);
 
     const getClassRoomData = () => {
         fetch(GetClassRoom + "1637864914763:360532:stolar", {
@@ -143,6 +145,20 @@ function Drawer() {
         setClassRoom(tempClassRoom);
     }
 
+    const doResize = (ui:any) => {
+        if(stolParentRef.current === undefined || stolParentRef.current === null){
+            setScale(0);
+            return;
+        }
+
+        var newScale = Math.min(
+            ui.size.width / stolParentRef.current.offsetWidth,
+            ui.size.height / stolParentRef.current.offsetHeight
+        )
+        console.log(newScale);
+        setScale(newScale); 
+    }
+
     useEffect(() => {
         if(stolParentRef === null || stolParentRef === undefined || stolParentRef.current === null){
             return;
@@ -152,9 +168,15 @@ function Drawer() {
             x:stolParentRef.current.getBoundingClientRect().left,
             y:stolParentRef.current.getBoundingClientRect().top
         });
-    }, [stolParentRef])
+    }, [stolParentRef]);
 
     useEffect(() => {
+        doResize({ 
+            size: {
+                width: wraperRef.current?.offsetWidth,
+                height: wraperRef.current?.offsetHeight
+            }
+        });
         getClassRoomData();
         if(stolParentRef === null || stolParentRef === undefined || stolParentRef.current === null){
             return;
@@ -164,7 +186,24 @@ function Drawer() {
             x:stolParentRef.current.getBoundingClientRect().left,
             y:stolParentRef.current.getBoundingClientRect().top
         });
-    }, [])
+    }, []);
+
+    useEffect(() => {
+        const handleResize = ()=>{
+            doResize({ 
+                size: {
+                    width: wraperRef.current?.offsetWidth,
+                    height: wraperRef.current?.offsetHeight
+                }
+            });
+        }
+    
+        window.addEventListener('resize', handleResize);
+    
+        return () => {
+          window.removeEventListener('resize', handleResize);
+        }
+      }, [])
 
     if(offset.x !== stolParentRef.current?.getBoundingClientRect().left || offset.y !== stolParentRef.current.getBoundingClientRect().top){
         if(stolParentRef === null || stolParentRef === undefined || stolParentRef.current === null){
@@ -194,26 +233,29 @@ function Drawer() {
                     </div>
                 }
             </div>
-            <div ref={stolParentRef} className="StolParent" onMouseMove={(e)=>{setMousePos({x:e.clientX,y:e.clientY})}}>
-                {classRoom.chairs.map((item,index)=>{
-                    return(
-                        <Stol 
-                            force={item.force} 
-                            name={names.names[index].firstName} 
-                            pos={{x:item.x,y:item.y}} 
-                            size={{x:item.sizeX,y:item.sizeY}} 
-                            key={index}
-                            classRoom={classRoom}
-                            changeChairPos={changeChairPos}
-                            current={current}
-                            setCurrent={setCurrent}
-                            index={index}
-                            mousePos={mousePos}
-                            grid={grid}
-                            offset={offset}
-                        />
-                    )
-                })}
+            <div ref={wraperRef} className="StolParentWrapper">
+                <div style={{transform:"translate(-50%,-50%) scale(" + scale + ")"}} ref={stolParentRef} className="StolParent" onMouseMove={(e)=>{setMousePos({x:e.clientX,y:e.clientY})}}>
+                    {classRoom.chairs.map((item,index)=>{
+                        return(
+                            <Stol 
+                                force={item.force} 
+                                name={names.names[index].firstName} 
+                                pos={{x:item.x,y:item.y}} 
+                                size={{x:item.sizeX,y:item.sizeY}} 
+                                key={index}
+                                classRoom={classRoom}
+                                changeChairPos={changeChairPos}
+                                current={current}
+                                setCurrent={setCurrent}
+                                index={index}
+                                mousePos={mousePos}
+                                grid={grid}
+                                offset={offset}
+                                scale={scale}
+                            />
+                        )
+                    })}
+                </div>
             </div>
         </div>
     )

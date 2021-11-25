@@ -13,18 +13,22 @@ interface Props{
     mousePos:Pos,
     classRoom:ClassRoom,
     grid:Pos,
-    offset:Pos
+    offset:Pos,
+    scale:number
 }
 
 const snapToGrid = (n:number,grid:number):number => {
     return grid * Math.round(n/grid)
 }
 
-function Stol({name,pos,size,force,index,current,setCurrent,changeChairPos,mousePos,classRoom,grid,offset}:Props) {
+function Stol({name,pos,size,force,index,current,scale,setCurrent,changeChairPos,mousePos,classRoom,grid,offset}:Props) {
     useEffect(() => {
         if(current === index){
-            var x = snapToGrid(mousePos.x - size.x / 2 - offset.x,grid.x);
-            var y = snapToGrid(mousePos.y - size.y / 2 - offset.y,grid.y);
+            var x = snapToGrid((mousePos.x - size.x / 2 - offset.x)/scale,grid.x);
+            var y = snapToGrid((mousePos.y - size.y / 2 - offset.y)/scale,grid.y);
+
+            //x /= scale;
+            //y /= scale;
 
             if(x !== pos.x || y !== pos.y){
                 changeChairPos(index, {x:x,y:y});

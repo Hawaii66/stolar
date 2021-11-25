@@ -24,6 +24,22 @@
 
 .StolParent {
     position: relative;
+    left: 50%;
+    top: 50%;
+    transform: translate(-50%, -50%);
+    transform-origin: center center;
     width: 1000px;
-    height: 1000px;
+    height: 750px;
 }
+
+.StolParentWrapper {
+    resize: both;
+    position: relative;
+    width: 90vw;
+    height: calc(90vw * 0.75);
+    background-color: #2d3436;
+    padding: 20px;
+}
+
+
+/*https://css-tricks.com/scaled-proportional-blocks-with-css-and-javascript/*/
