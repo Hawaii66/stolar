@@ -101,11 +101,6 @@ function PreDraw({setClassRoomID,setNamesID,teacher,setTeacher}:Props) {
                         )
                     })}
                 </Form.Select>
-                <InputGroup className="m-3 ms-0">
-                    <InputGroup.Text id="nameText">Skapa en ny sal</InputGroup.Text>
-                    <FormControl ref={classRoomNameRef} id="name" name="name" placeholder="Namn på salen" type="text" aria-label="Name"/>
-                    <Button variant="outline-secondary" onClick={createNewClassRoom}>Skapa</Button>
-                </InputGroup>
             </Col>
             <Col>
                 <Form.Select name="mode" id="mode" aria-label="Select mode" onChange={(e)=>setNamesID(e.currentTarget.value)} >
@@ -116,6 +111,13 @@ function PreDraw({setClassRoomID,setNamesID,teacher,setTeacher}:Props) {
                         )
                     })}
                 </Form.Select>
+            </Col>
+            <Col>
+                <InputGroup className="m-3 ms-0">
+                    <InputGroup.Text id="nameText">Skapa en ny sal</InputGroup.Text>
+                    <FormControl ref={classRoomNameRef} id="name" name="name" placeholder="Namn på salen" type="text" aria-label="Name"/>
+                    <Button variant="outline-secondary" onClick={createNewClassRoom}>Skapa</Button>
+                </InputGroup>
                 <InputGroup className="m-3 ms-0">
                     <InputGroup.Text id="groupText">Skapa en ny grupp</InputGroup.Text>
                     <FormControl ref={groupNameRef} id="group" name="group" placeholder="Namn på gruppen" type="text" aria-label="Grupp"/>
