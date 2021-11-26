@@ -1,6 +1,7 @@
 export interface ClassRoom{
     classRoomID:string,
     chairs:Chair[],
+    lecterns:Lectern[],
     name:string
 }
 
@@ -8,6 +9,14 @@ export interface Names{
     namesID:string,
     className:string,
     names:Name[]
+}
+
+export interface Lectern {
+    x:number,
+    y:number,
+    sizeX:number,
+    sizeY:number,
+    name:string
 }
 
 export interface Chair{

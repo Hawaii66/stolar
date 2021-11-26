@@ -27,6 +27,17 @@
     user-select: none;
 }
 
+.Lecture {
+    position: absolute;
+    background-color: #b4b2b0;
+    color: #2d3436;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    border: solid #2d3436 2px;
+    transform: translate(-2px, -2px);
+}
+
 .Force {
     border: solid #2d3436 3px;
     border-radius: 10%;
@@ -59,3 +70,25 @@
 
 
 /*https://css-tricks.com/scaled-proportional-blocks-with-css-and-javascript/*/
+
+.FormParent {
+    width: 10vw;
+    text-align: center;
+    margin: 1rem;
+    margin-top: 0rem;
+    padding-top: 1rem;
+}
+
+.FormSettings {
+    margin-top: 0.5rem;
+    width: 50vw;
+}
+
+.FormSettingsMode {
+    margin: 1rem;
+    margin-left: 0rem;
+}
+
+.MoveCard {
+    background-color: rgba(0, 0, 0, 0.1) !important;
+}

@@ -1,10 +1,15 @@
 import React, { useEffect, useRef, useState } from 'react'
+import { Form, FormControl, InputGroup, Button, Card } from 'react-bootstrap';
 import { ClassRoom, Names, Pos } from '../../Interfaces/Classroom'
 import { GetClassRoom, SetClassRoomChairs } from '../../ServerRoutes';
+import CustomModal from '../Utils/CustomModal';
+import Lecturne from './Lecturne';
 import Stol from './Stol'
 import "./Stol.css";
+import 'bootstrap/dist/css/bootstrap.min.css';
+import Settings from './Settings';
 
-enum Modes {"View","Edit"}
+export enum Modes {"View","Edit"}
 export enum EditModes {"Move","Properties"}
 
 function StringToMode (s:string){
@@ -35,8 +40,12 @@ function Drawer() {
     const [mode,setMode] = useState<Modes>(Modes.View);
     const [editMode,setEditMode] = useState<EditModes>(EditModes.Move);
     const [scale,setScale] = useState(1);
+    const [showWarningModal, setShowModal] = useState(false);
+    const [currentLecture,setCurrentLecture] = useState(-1);
+
     const [classRoom,setClassRoom] = useState<ClassRoom>({
         chairs:[],
+        lecterns:[],
         classRoomID:"",
         name:""
     });
@@ -72,6 +81,9 @@ function Drawer() {
     const sizeXRef = useRef<HTMLInputElement>(null);
     const sizeYRef = useRef<HTMLInputElement>(null);
     const forceRef = useRef<HTMLInputElement>(null);
+    const sizeXLecternRef = useRef<HTMLInputElement>(null);
+    const sizeYLecternRef = useRef<HTMLInputElement>(null);
+    const nameLecternRef = useRef<HTMLInputElement>(null);
 
     const getClassRoomData = () => {
         fetch(GetClassRoom + "1637864914763:360532:stolar", {
@@ -95,6 +107,24 @@ function Drawer() {
         });
         setClassRoom({
             chairs:chairs,
+            lecterns:classRoom.lecterns,
+            classRoomID:classRoom.classRoomID,
+            name:classRoom.name
+        })
+    }
+
+    const AddLectern = () => {
+        var lecterns = [...classRoom.lecterns];
+        lecterns.push({
+            name:"",
+            sizeX:100,
+            sizeY:50,
+            x:0,
+            y:0
+        });
+        setClassRoom({
+            chairs:classRoom.chairs,
+            lecterns:lecterns,
             classRoomID:classRoom.classRoomID,
             name:classRoom.name
         })
@@ -102,7 +132,8 @@ function Drawer() {
 
     const SaveLayout = () => {
         const data = {
-            chairs: classRoom.chairs
+            chairs: classRoom.chairs,
+            lecterns: classRoom.lecterns
         }
 
         fetch(SetClassRoomChairs + "1637864914763:360532:stolar", {
@@ -115,6 +146,43 @@ function Drawer() {
             console.log(data);
             setClassRoom(data.data);
         }));
+    }
+
+    const changeLecternSizeX = (x:number) => {
+        changeLecternSize({
+            x:x,
+            y:classRoom.lecterns[currentLecture].sizeY
+        })
+    }
+
+    const changeLecternSizeY = (y:number) => {
+        changeLecternSize({
+            y:y,
+            x:classRoom.lecterns[currentLecture].sizeX
+        })
+    }
+
+    const changeLecternSize = (pos:Pos) => {
+        var tempClassRoom:ClassRoom = {
+            chairs:[...classRoom.chairs],
+            lecterns:[...classRoom.lecterns],
+            classRoomID:classRoom.classRoomID,
+            name:classRoom.name
+        }
+        tempClassRoom.lecterns[currentLecture].sizeX = pos.x;
+        tempClassRoom.lecterns[currentLecture].sizeY = pos.y;
+        setClassRoom(tempClassRoom);
+    }
+
+    const changeLecternName = (name:string) => {
+        var tempClassRoom:ClassRoom = {
+            chairs:[...classRoom.chairs],
+            lecterns:[...classRoom.lecterns],
+            classRoomID:classRoom.classRoomID,
+            name:classRoom.name
+        }
+        tempClassRoom.lecterns[currentLecture].name = name;
+        setClassRoom(tempClassRoom);
     }
 
     const changeChairSizeX = (x:number) => {
@@ -134,6 +202,7 @@ function Drawer() {
     const changeChairSize = (pos:Pos) => {
         var tempClassRoom:ClassRoom = {
             chairs:[...classRoom.chairs],
+            lecterns:[...classRoom.lecterns],
             classRoomID:classRoom.classRoomID,
             name:classRoom.name
         }
@@ -145,6 +214,7 @@ function Drawer() {
     const changeChairPos = (index:number, pos:Pos) => {
         var tempClassRoom:ClassRoom = {
             chairs:[...classRoom.chairs],
+            lecterns:[...classRoom.lecterns],
             classRoomID:classRoom.classRoomID,
             name:classRoom.name
         }
@@ -156,10 +226,23 @@ function Drawer() {
     const changeChairForce = (index:number, force:boolean) => {
         var tempClassRoom:ClassRoom = {
             chairs:[...classRoom.chairs],
+            lecterns:[...classRoom.lecterns],
             classRoomID:classRoom.classRoomID,
             name:classRoom.name
         }
         tempClassRoom.chairs[index].force = force;
+        setClassRoom(tempClassRoom);
+    }
+
+    const changeLecturePos = (index:number, pos:Pos) => {
+        var tempClassRoom:ClassRoom = {
+            chairs:[...classRoom.chairs],
+            lecterns:[...classRoom.lecterns],
+            classRoomID:classRoom.classRoomID,
+            name:classRoom.name
+        }
+        tempClassRoom.lecterns[index].x = pos.x;
+        tempClassRoom.lecterns[index].y = pos.y;
         setClassRoom(tempClassRoom);
     }
 
@@ -177,8 +260,25 @@ function Drawer() {
         setScale(newScale); 
     }
 
+    const updateCurrentLectureSelected = (i:number) => {
+        setCurrentLecture(i);
+        setCurrent(-1);
+        if(i !== -1){
+            if(sizeXLecternRef === null || sizeXLecternRef === undefined || sizeXLecternRef.current === undefined || sizeXLecternRef.current === null){
+            }else{
+                sizeXLecternRef.current.value = classRoom.chairs[i].sizeX.toString();
+            }
+
+            if(sizeYLecternRef === null || sizeYLecternRef === undefined || sizeYLecternRef.current === undefined || sizeYLecternRef.current === null){
+            }else{
+                sizeYLecternRef.current.value = classRoom.chairs[i].sizeX.toString();
+            }
+        }
+    }
+
     const updateCurrentSelected = (i:number) => {
         setCurrent(i);
+        setCurrentLecture(-1);
         if(i !== -1){
             if(sizeXRef === null || sizeXRef === undefined || sizeXRef.current === undefined || sizeXRef.current === null){
             }else{
@@ -194,6 +294,20 @@ function Drawer() {
             }else{
                 forceRef.current.checked = classRoom.chairs[i].force;
             }
+        }
+    }
+
+    const modalButtonClicked = (i:number) => {
+        if(i === -1){
+            return;
+        }
+
+        if(i === 1){
+            getClassRoomData();
+            setShowModal(false);
+        }
+        if(i === 0){
+            setShowModal(false);
         }
     }
 
@@ -241,7 +355,7 @@ function Drawer() {
         return () => {
           window.removeEventListener('resize', handleResize);
         }
-      }, [])
+    }, []);
 
     if(offset.x !== stolParentRef.current?.getBoundingClientRect().left || offset.y !== stolParentRef.current.getBoundingClientRect().top){
         if(stolParentRef === null || stolParentRef === undefined || stolParentRef.current === null){
@@ -256,31 +370,109 @@ function Drawer() {
 
     return (
         <div className="Background">
-            <div >
-                <select name="mode" id="mode" onChange={(e)=>setMode(StringToMode(e.currentTarget.value))}>
+            <Settings 
+                    mode={mode} 
+                    editMode={editMode}
+                    current={current}
+                    currentLecture={currentLecture}
+                    classRoom={classRoom}
+                    names={names}
+                    grid={grid}
+                    changeMode={setMode}
+                    changeEditMode={setEditMode}
+                    changeGrid={setGrid}
+                    changeClassRoom={setClassRoom}
+                />
+            <div className="FormParent">
+                
+                <Form.Select aria-label="Välj läge" name="mode" id="mode" onChange={(e)=>setMode(StringToMode(e.currentTarget.value))}>
                     <option value="View">Titta</option>
                     <option value="Edit">Ändra</option>
-                </select>
+                </Form.Select>
                 {mode === Modes.Edit && 
-                    <div ref={divRef}>
-                        <select name="editMode" id="editMode" onChange={(e)=>setEditMode(StringToEditMode(e.currentTarget.value))}>
-                            <option value="Move">Flytta</option>
-                            <option value="Properties">Egenskaper</option>
-                        </select>
-                        <input onChange={(e)=>setGrid({x:parseInt(e.currentTarget.value),y:grid.y})} type="number" name="gridX" id="gridX" />
-                        <input onChange={(e)=>setGrid({y:parseInt(e.currentTarget.value),x:grid.x})} type="number" name="gridY" id="gridY" />
-                        <button onClick={()=>AddChair()}>Lägg till Stol</button>
-                        <button onClick={()=>getClassRoomData()}>Ladda Stolar</button>
-                        <button onClick={()=>SaveLayout()}>Spara Stolar</button>
+                    <div ref={divRef} className="FormSettings">
+                        <Form.Select className="FormSettingsMode" aria-label="Välj läge" name="editMode" id="editMode" onChange={(e)=>setEditMode(StringToEditMode(e.currentTarget.value))}>
+                            <option value="Move">Flytta stolar</option>
+                            <option value="Properties">Egenskaper för stolar</option>
+                        </Form.Select>
+                        {editMode === EditModes.Move && <Card className="MoveCard">
+                            <Card.Body>
+                        {["X","Y"].map((item,index)=>{
+                            return(
+                                <InputGroup className="mb-3">
+                                    <InputGroup.Text id={item}>{item}</InputGroup.Text>
+                                    <FormControl
+                                    placeholder={`${item} grid`}
+                                    aria-label={`${item} grid`}
+                                    onChange={(e)=>setGrid(item === "X" ? {x:parseInt(e.currentTarget.value),y:grid.y} : {y:parseInt(e.currentTarget.value),x:grid.x})}
+                                    type="number"
+                                    name={`grid${item}`}
+                                    id={`grid${item}`}
+                                    />
+                                </InputGroup>
+                            )
+                        })}
+                        </Card.Body>
+                        <Button onClick={()=>AddChair()} variant="light">Lägg till en stol</Button>{' '}
+                        <Button onClick={()=>AddLectern()} variant="light">Lägg till en kated</Button>{' '}
+                        <Button onClick={()=>setShowModal(true)} variant="light">Ladda Layout</Button>{' '}
+                        <Button onClick={()=>SaveLayout()} variant="light">Spara Layout</Button>{' '}
+                        </Card>}
                         {editMode === EditModes.Properties && <div>
                             {current !== -1 ? <div>
                                 <h3>{current >= names.names.length ? "" : names.names[current].firstName}</h3>
-                                <input ref={sizeXRef} onChange={(e)=>changeChairSizeX(parseInt(e.currentTarget.value))} defaultValue={classRoom.chairs[current].sizeX} placeholder="Storlek på namnet X" type="number" name="sizeX" id="sizeX" />
-                                <input ref={sizeYRef} onChange={(e)=>changeChairSizeY(parseInt(e.currentTarget.value))} defaultValue={classRoom.chairs[current].sizeY} placeholder="Storlek på namnet Y" type="number" name="sizeY" id="sizeY" />
-                                <input ref={forceRef} onChange={(e)=>changeChairForce(current, !classRoom.chairs[current].force)} defaultChecked={classRoom.chairs[current].force} placeholder="Tvinga slumpvis person att hamna här" type="checkbox" name="force" id="force" />
+                                {["X","Y"].map((item,index)=>{
+                                return(
+                                    <InputGroup className="mb-3">
+                                        <InputGroup.Text id={item}>{item}</InputGroup.Text>
+                                        <FormControl
+                                        ref={item === "X" ? sizeXRef : sizeYRef}
+                                        placeholder={`Storlek på namnet ${item}"`}
+                                        aria-label={`${item} kordinat`}
+                                        onChange={(e)=>changeChairSize(item === "X" ? {x:parseInt(e.currentTarget.value),y:classRoom.chairs[current].y} : {y:parseInt(e.currentTarget.value),x:classRoom.chairs[current].x})}
+                                        type="number"
+                                        name={`size${item}`}
+                                        id={`size${item}`}
+                                        defaultValue={item === "X" ? classRoom.chairs[current].sizeX : classRoom.chairs[current].sizeY}
+                                       />
+                                    </InputGroup>
+                                )
+                                })}
+                                <Form.Check
+                                    ref={forceRef} 
+                                    onChange={(e)=>changeChairForce(current, !classRoom.chairs[current].force)}
+                                    defaultChecked={classRoom.chairs[current].force}
+                                    placeholder="Tvinga slumpvis person att hamna här" 
+                                    type="checkbox" 
+                                    name="force" 
+                                    id="force"
+                                    label="Tvinga stolen att få ett namn"
+                                />
                             </div> 
-                            : <div>
-                                <h2>Ingen person vald</h2>
+                            : currentLecture !== -1 ? <div>
+                                <h3>{currentLecture >= classRoom.lecterns.length ? "" : classRoom.lecterns[currentLecture].name}</h3>
+                                
+                                {["X","Y"].map((item,index)=>{
+                                return(
+                                    <InputGroup className="mb-3">
+                                        <InputGroup.Text id={item}>{item}</InputGroup.Text>
+                                        <FormControl
+                                        ref={item === "X" ? sizeXLecternRef : sizeYLecternRef}
+                                        placeholder={`Storlek på namnet ${item}"`}
+                                        aria-label={`${item} kordinat`}
+                                        onChange={(e)=>changeLecternSize(item === "X" ? {x:parseInt(e.currentTarget.value),y:classRoom.lecterns[currentLecture].y} : {y:parseInt(e.currentTarget.value),x:classRoom.lecterns[currentLecture].x})}
+                                        type="number"
+                                        name={`size${item}`}
+                                        id={`size${item}`}
+                                        key={index}
+                                        defaultValue={item === "X" ? classRoom.lecterns[currentLecture].sizeX : classRoom.lecterns[currentLecture].sizeY}
+                                       />
+                                    </InputGroup>
+                                )
+                                })}
+                                <Form.Control ref={nameLecternRef} onChange={(e)=>changeLecternName(e.currentTarget.value)} defaultValue={classRoom.lecterns[currentLecture].name} type="text" name="name" id="name" placeholder="Namn på katedern" />
+                            </div> : <div>
+                                <h2>Inget att visa</h2>
                             </div>}
                         </div>}
                     </div>
@@ -309,8 +501,35 @@ function Drawer() {
                             />
                         )
                     })}
+                    {classRoom.lecterns.map((item,index)=>{
+                        return(
+                            <Lecturne 
+                                name={item.name}
+                                pos={{x:item.x,y:item.y}}
+                                size={{x:item.sizeX,y:item.sizeY}}
+                                key={index}
+                                current={currentLecture}
+                                index={index}
+                                mousePos={mousePos}
+                                grid={grid}
+                                offset={offset}
+                                scale={scale}
+                                editMode={editMode}
+                                changeLecturePos={changeLecturePos}
+                                setCurrent={updateCurrentLectureSelected}
+                            />
+                        );
+                    })}
                 </div>
             </div>
+            <CustomModal
+                buttons={[{title:"Nej",variant:"warning"},{title:"Ok",variant:"success"}]}
+                show={showWarningModal}
+                title="Ladda Layout"
+                buttonClicked={(i)=>modalButtonClicked(i)}
+            >
+                <p>Om du klickar på OK kommer alla ändringar du gjort efter förra sparningen att gå förlorade. Klicka på Nej om du inte vill att det ska ske!</p>
+            </CustomModal>
         </div>
     )
 }
