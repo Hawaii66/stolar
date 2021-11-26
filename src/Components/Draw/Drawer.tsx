@@ -274,7 +274,7 @@ function Drawer() {
                         <button onClick={()=>SaveLayout()}>Spara Stolar</button>
                         {editMode === EditModes.Properties && <div>
                             {current !== -1 ? <div>
-                                <h3>{names.names[current].firstName}</h3>
+                                <h3>{current >= names.names.length ? "" : names.names[current].firstName}</h3>
                                 <input ref={sizeXRef} onChange={(e)=>changeChairSizeX(parseInt(e.currentTarget.value))} defaultValue={classRoom.chairs[current].sizeX} placeholder="Storlek på namnet X" type="number" name="sizeX" id="sizeX" />
                                 <input ref={sizeYRef} onChange={(e)=>changeChairSizeY(parseInt(e.currentTarget.value))} defaultValue={classRoom.chairs[current].sizeY} placeholder="Storlek på namnet Y" type="number" name="sizeY" id="sizeY" />
                                 <input ref={forceRef} onChange={(e)=>changeChairForce(current, !classRoom.chairs[current].force)} defaultChecked={classRoom.chairs[current].force} placeholder="Tvinga slumpvis person att hamna här" type="checkbox" name="force" id="force" />
@@ -292,7 +292,7 @@ function Drawer() {
                         return(
                             <Stol 
                                 force={item.force} 
-                                name={names.names[index].firstName} 
+                                name={index >= names.names.length ? "" : names.names[index].firstName} 
                                 pos={{x:item.x,y:item.y}} 
                                 size={{x:item.sizeX,y:item.sizeY}} 
                                 key={index}
