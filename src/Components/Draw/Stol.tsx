@@ -1,6 +1,6 @@
 import React, { useEffect } from 'react'
 import { Pos } from '../../Interfaces/Classroom'
-import { EditModes } from './Drawer'
+import { EditModes, Modes } from './Drawer'
 
 interface Props{
     name:string,
@@ -17,16 +17,17 @@ interface Props{
     offset:Pos,
     scale:number,
     editMode:EditModes
+    mode:Modes
 }
 
 const snapToGrid = (n:number,grid:number):number => {
     return grid * Math.round(n/grid)
 }
 
-function Stol({name,pos,size,force,index,current,scale,setCurrent,changeChairPos,changeChairForce,mousePos,grid,offset,editMode}:Props) {
+function Stol({name,pos,mode,size,force,index,current,scale,setCurrent,changeChairPos,changeChairForce,mousePos,grid,offset,editMode}:Props) {
     useEffect(() => {
         if(current === index){
-            if(editMode === EditModes.Move){
+            if(editMode === EditModes.Move && mode === Modes.Edit){
                 var x = snapToGrid((mousePos.x - size.x / 2 - offset.x)/scale,grid.x);
                 var y = snapToGrid((mousePos.y - size.y / 2 - offset.y)/scale,grid.y);
 
@@ -35,7 +36,7 @@ function Stol({name,pos,size,force,index,current,scale,setCurrent,changeChairPos
                 }
             }
         }
-    }, [mousePos, changeChairPos, current, grid, index, offset, size, pos, scale, editMode])
+    }, [mousePos, changeChairPos, current, grid, index, offset, size, pos, scale, editMode,mode])
 
     const stolClicked = () => {
         if(editMode === EditModes.Move || editMode === EditModes.Properties){

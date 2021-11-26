@@ -38,6 +38,24 @@
     transform: translate(-2px, -2px);
 }
 
+.Lecture h2 {
+    font-size: large;
+    font-weight: 1000;
+    font-variant: small-caps;
+    color: #2d3436;
+    -webkit-touch-callout: none;
+    /* iOS Safari */
+    -webkit-user-select: none;
+    /* Safari */
+    -khtml-user-select: none;
+    /* Konqueror HTML */
+    -moz-user-select: none;
+    /* Old versions of Firefox */
+    -ms-user-select: none;
+    /* Internet Explorer/Edge */
+    user-select: none;
+}
+
 .Force {
     border: solid #2d3436 3px;
     border-radius: 10%;
@@ -66,6 +84,13 @@
     background-image: url("https://free-3dtextureshd.com/wp-content/uploads/2019/05/WOOD-FLOORS-Parquet-Textures-ARCHITECTURE-parquet-flooring-texture-seamless-BPR-material-High-Resolution-Free-Download-substances-4k-full-864x864.jpg");
     background-repeat: no-repeat;
     background-size: cover;
+}
+
+.Background .br {
+    margin-top: 1rem;
+    height: 3px;
+    width: calc(100vw-2rem);
+    background-color: black;
 }
 
 

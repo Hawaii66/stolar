@@ -12,10 +12,14 @@ interface Props {
     classRoom:ClassRoom,
     names:Names,
     grid:Pos,
-    changeEditMode:React.Dispatch<React.SetStateAction<EditModes>>,
-    changeMode:React.Dispatch<React.SetStateAction<Modes>>,
+    changeEditMode:(editMode:EditModes) => void,
+    changeMode:(mode:Modes) => void,
     changeGrid:React.Dispatch<React.SetStateAction<Pos>>,
     changeClassRoom:React.Dispatch<React.SetStateAction<ClassRoom>>,
+    addChair:()=>void,
+    addLectern:()=>void,
+    setModal:()=>void,
+    saveLayout:()=>void
 }
 
 function StringToMode (s:string){
@@ -38,7 +42,7 @@ function StringToEditMode (s:string){
     return EditModes.Move;
 }
 
-function Settings({mode,editMode,current,currentLecture,classRoom,names,grid,changeClassRoom,changeGrid,changeMode,changeEditMode}:Props) {
+function Settings({mode,editMode,current,currentLecture,classRoom,names,addChair,addLectern,saveLayout,setModal,grid,changeClassRoom,changeGrid,changeMode,changeEditMode}:Props) {
     const nameRef = useRef<HTMLInputElement>(null);
     const forceRef = useRef<HTMLInputElement>(null);
     const chairSizeX = useRef<HTMLInputElement>(null);
@@ -179,10 +183,10 @@ function Settings({mode,editMode,current,currentLecture,classRoom,names,grid,cha
                         {editMode === EditModes.Move ? 
                             <>
                                 <Col>
-                                    <Button style={{width:"100%"}}>123</Button>
+                                    <Button onClick={()=>addChair()} variant="light" style={{width:"100%"}}>Lägg till en stol</Button>
                                 </Col>
                                 <Col>
-                                    <Button style={{width:"100%"}}>123</Button>
+                                    <Button onClick={()=>addLectern()} variant="light" style={{width:"100%"}}>Lägg till en kated</Button>
                                 </Col>
                             </>
                         : current !== -1 ? 
@@ -213,10 +217,10 @@ function Settings({mode,editMode,current,currentLecture,classRoom,names,grid,cha
                         {editMode === EditModes.Move ? 
                             <>
                                 <Col>
-                                    <Button style={{width:"100%"}}>123</Button>
+                                    <Button onClick={()=>setModal()} variant="light" style={{width:"100%"}}>Ladda Layout</Button>
                                 </Col>
                                 <Col>
-                                    <Button style={{width:"100%"}}>123</Button>
+                                    <Button onClick={()=>saveLayout()} variant="light" style={{width:"100%"}}>Spara Layout</Button>
                                 </Col>
                             </>
                         : current !== -1 ? 

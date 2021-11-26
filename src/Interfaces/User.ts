@@ -1,10 +1,3 @@
-export enum Roles{
-    "student",
-    "teacher",
-    "admin",
-    "none"
-}
-
 export interface User{
     displayName:string,
     givenName:string,
@@ -14,13 +7,24 @@ export interface User{
     class:string,
     active:boolean,
     accountID:string,
-    role:Roles,
     number:string
 }
 
 export interface Teacher {
-    userID:string,
-    classRoomIDs:string[],
+    displayName:string,
+    givenName:string,
+    surName:string,
+    email:string,
+    active:boolean,
+    accountID:string,
+    classRoomIDs:ID[],
+    groupIDs:ID[],
+    number:string
+}
+
+export interface ID {
+    id:string,
+    name:string
 }
 
 export const emptyUser:User = {
@@ -32,6 +36,17 @@ export const emptyUser:User = {
     id:"",
     surName:"",
     accountID:"",
-    role:Roles.none,
+    number:""
+}
+
+export const emptyTeacher:Teacher = {
+    accountID:"",
+    active:false,
+    classRoomIDs:[],
+    displayName:"",
+    email:"",
+    givenName:"",
+    groupIDs:[],
+    surName:"",
     number:""
 }

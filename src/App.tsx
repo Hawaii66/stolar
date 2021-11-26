@@ -1,16 +1,18 @@
 import React, { useState } from 'react';
 import { BrowserRouter as Router } from 'react-router-dom';
+import { emptyTeacher } from './Interfaces/User';
 import StolarRoutes from './Routes/StolarRoutes';
-import { emptyUser } from './Interfaces/User';
 
 require('dotenv').config()
 
 function App() {
-  const [user,setUser] = useState(emptyUser);
+  const [teacher,setTeacher] = useState(emptyTeacher);
+  const [classRoomID, setClassRoomID] = useState("");
+  const [namesID, setNamesID] = useState("");
 
   return (
     <Router>
-      <StolarRoutes user={user} setUser={setUser}/>
+      <StolarRoutes classRoomID={classRoomID} namesID={namesID} setClassRoomID={setClassRoomID} setNamesID={setNamesID} teacher={teacher} setTeacher={setTeacher}/>
     </Router>
   );
 }

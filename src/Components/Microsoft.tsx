@@ -1,14 +1,15 @@
 import React from 'react'
 import MicrosoftLogin from 'react-microsoft-login';
-import { emptyUser, Roles, User } from '../Interfaces/User';
+import { emptyTeacher, Teacher } from '../Interfaces/User';
 import CustomModal from './Utils/CustomModal';
 import 'bootstrap/dist/css/bootstrap.min.css';
+import { CreateTeacher, GetTeacher } from '../ServerRoutes';
 
 interface Props{
-    setUser:React.Dispatch<React.SetStateAction<User>>,
+    setTeacher:React.Dispatch<React.SetStateAction<Teacher>>,
 }
 
-function Microsoft({setUser}:Props) {
+function Microsoft({setTeacher}:Props) {
     /*if(process.env.REACT_APP_WEBBISTE === "http://localhost:3000"){
         setUser({
             active:true,
@@ -26,31 +27,57 @@ function Microsoft({setUser}:Props) {
 
     const authHandler = (err:any, data:any)=>{
         if(err == null){
-            var user:User = {
+            var teacher:Teacher = {
                 active:true,
-                class:"",
                 displayName:data.displayName,
                 email:data.mail,
                 givenName:data.givenName,
-                id:data.id,
                 surName:data.surname,
                 accountID:data.id,
-                role:Roles.student,
+                classRoomIDs:[],
+                groupIDs:[],
                 number:""
             }
 
-            setUser(user);
+            fetch(GetTeacher + teacher.accountID,{
+                method:"GET",
+                headers:{
+                    "content-type":"application/json"
+                }
+            }).then(res=>res.json().then(data=>{
+                if(data === null || data.data === null){
+                    const newTeacher = {
+                        accountID:teacher.accountID,
+                        displayName:teacher.displayName,
+                        givenName:teacher.givenName,
+                        surName:teacher.surName,
+                        email:teacher.email
+                    }
+
+                    fetch(CreateTeacher,{
+                        method:"POST",
+                        body:JSON.stringify(newTeacher),
+                        headers:{
+                            "content-type":"application/json"
+                        }
+                    }).then(res=>res.json().then(newData=>{
+                        setTeacher(newData.data);
+                    }));
+                }else{
+                    setTeacher(data.data);
+                }
+            }));
             return;
         }
 
-        setUser(emptyUser);
+        setTeacher(emptyTeacher);
     }
 
     let key = process.env.REACT_APP_MICROSOFT_KEY === undefined ? "" : process.env.REACT_APP_MICROSOFT_KEY;
 
     return (
         <div>
-            <CustomModal title="Logga in" show={true} buttonClicked={()=>{}} buttons={[]}>
+            <CustomModal title="Logga in som lärare" show={true} buttonClicked={()=>{}} buttons={[]}>
                 <MicrosoftLogin clientId={key} withUserData={true} authCallback={authHandler}/>
             </CustomModal>
         </div>
